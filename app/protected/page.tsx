@@ -13,6 +13,19 @@ export default async function ProtectedPage() {
     return redirect("/sign-in");
   }
 
+  const { data: userRole, error } = await supabase
+    .from("users")
+    .select("role")
+    .eq("email", user?.email)
+    .single();
+
+  if (error || !userRole) {
+    console.log("Error fetching role: ", error);
+    return redirect("/sign-in");
+  }
+
+  const role = userRole.role;
+
   return (
     <div className="flex-1 w-full flex flex-col gap-12">
       <div className="w-full">
@@ -27,6 +40,7 @@ export default async function ProtectedPage() {
         <pre className="text-xs font-mono p-3 rounded border max-h-32 overflow-auto">
           {JSON.stringify(user, null, 2)}
         </pre>
+        <div>Your role {role==="admin" ? "Admin" : "Intern"}</div>
       </div>
 
       <div>
