@@ -18,7 +18,7 @@ export function EnvVarWarning() {
         >
           <Link href="/sign-in">Sign in</Link>
         </Button>
-        <Button
+        {/* <Button
           asChild
           size="sm"
           variant={"default"}
@@ -26,7 +26,7 @@ export function EnvVarWarning() {
           className="opacity-75 cursor-none pointer-events-none"
         >
           <Link href="/sign-up">Sign up</Link>
-        </Button>
+        </Button> */}
       </div>
     </div>
   );
