@@ -57,6 +57,7 @@ export default async function AuthButton() {
           Sign out
         </Button>
       </form>
+      <ThemeSwitcher />
     </div>
   ) : (
     <div className="flex gap-2">
