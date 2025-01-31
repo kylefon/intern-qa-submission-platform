@@ -28,8 +28,6 @@ export default async function ProtectedPage() {
 
   const { data: appData, error: appError} = await supabase.from("apps").select();
 
-  console.log("app data: ", appData)
-
   if (appError) {
     console.log("Error fetching app data", error);
   }
@@ -43,13 +41,12 @@ export default async function ProtectedPage() {
           <div>
             <DashboardHeader appData={appData}/>
           </div>
-        ) : <div>
-            {appData?.map((data) => (
-                <div key={data.id} className="sm:w-1/2 md:w-1/3 lg:w-1/4">
-                    <AppTickets appName={data.app_name} type={data.type} description={"Ollopa number 1 company"} />
-                </div>
-            ))}
-          </div>}
+        ) : <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 auto-cols-fr">
+          {appData.map((data) => (
+            <AppTickets key={data.id} appName={data.app_name} type={data.type} description={"Ollopa number 1 company"} />
+          ))}
+        </div>
+        }
       </div>
     </div>
   );

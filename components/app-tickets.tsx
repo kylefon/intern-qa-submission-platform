@@ -8,7 +8,7 @@ import {
 
 export function AppTickets({appName, type, description}) {
     return (
-        <Card className="flex-row w-[500px] justify-items-center">
+        <Card className="flex-row w-full justify-items-center">
             <CardHeader className="w-full">
                 <div className="flex w-full justify-evenly items-center">
                     <CardTitle className="text-left w-11/12">{appName}</CardTitle>
