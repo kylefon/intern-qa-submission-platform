@@ -2,6 +2,7 @@ import { createClient } from "@/utils/supabase/server";
 import { InfoIcon } from "lucide-react";
 import { redirect } from "next/navigation";
 import DashboardHeader from "./dashboard-header";
+import { AppTickets } from "@/components/app-tickets";
 
 export default async function ProtectedPage() {
   const supabase = await createClient();
@@ -42,7 +43,13 @@ export default async function ProtectedPage() {
           <div>
             <DashboardHeader appData={appData}/>
           </div>
-        ) : "Intern"}
+        ) : <div>
+            {appData?.map((data) => (
+                <div key={data.id} className="sm:w-1/2 md:w-1/3 lg:w-1/4">
+                    <AppTickets appName={data.app_name} type={data.type} description={"Ollopa number 1 company"} />
+                </div>
+            ))}
+          </div>}
       </div>
     </div>
   );

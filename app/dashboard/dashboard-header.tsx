@@ -25,8 +25,8 @@ export default function DashboardHeader({ appData }: any) {
                 <TabsContent value="group">
                     <div className="flex flex-wrap gap-2">
                         {appData.map((data) => (
-                            <div className="sm:w-1/2 md:w-1/3 lg:w-1/4">
-                                <AppTickets key={data.id} appName={data.app_name} type={data.type} description={"Ollopa number 1 company"} />
+                            <div key={data.id} className="sm:w-1/2 md:w-1/3 lg:w-1/4">
+                                <AppTickets appName={data.app_name} type={data.type} description={"Ollopa number 1 company"} />
                             </div>
                         ))}
                     </div>
