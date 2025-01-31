@@ -1,6 +1,8 @@
 import { createClient } from "@/utils/supabase/server";
 import { InfoIcon } from "lucide-react";
 import { redirect } from "next/navigation";
+import DashboardHeader from "./dashboard-header";
+import { AppTickets } from "@/components/app-tickets";
 
 export default async function ProtectedPage() {
   const supabase = await createClient();
@@ -24,27 +26,30 @@ export default async function ProtectedPage() {
     return redirect("/sign-in");
   }
 
+  const { data: appData, error: appError} = await supabase.from("apps").select();
+
+  console.log("app data: ", appData)
+
+  if (appError) {
+    console.log("Error fetching app data", error);
+  }
+
   const role = userRole.role;
 
   return (
     <div className="flex-1 w-full flex flex-col gap-12">
       <div className="w-full">
-        <div className="bg-accent text-sm p-3 px-5 rounded-md text-foreground flex gap-3 items-center">
-          <InfoIcon size="16" strokeWidth={2} />
-          This is a protected page that you can only see as an authenticated
-          user
-        </div>
-      </div>
-      <div className="flex flex-col gap-2 items-start">
-        <h2 className="font-bold text-2xl mb-4">Your user details</h2>
-        <pre className="text-xs font-mono p-3 rounded border max-h-32 overflow-auto">
-          {JSON.stringify(user, null, 2)}
-        </pre>
-        <div>Your role {role==="admin" ? "Admin" : "Intern"}</div>
-      </div>
-
-      <div>
-        <h1>test</h1>
+        {role==="admin" ? (
+          <div>
+            <DashboardHeader appData={appData}/>
+          </div>
+        ) : <div>
+            {appData?.map((data) => (
+                <div key={data.id} className="sm:w-1/2 md:w-1/3 lg:w-1/4">
+                    <AppTickets appName={data.app_name} type={data.type} description={"Ollopa number 1 company"} />
+                </div>
+            ))}
+          </div>}
       </div>
     </div>
   );
