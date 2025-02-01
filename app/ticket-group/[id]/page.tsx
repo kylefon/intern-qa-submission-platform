@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTrigger, DialogDescription, 
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 
-export default async function TicketGroupPage() {
+export default async function TicketGroupPage({ params }: { params: { id: string } }) {
     const supabase = await createClient();
 
     const { data: { user } } = await supabase.auth.getUser();
@@ -19,25 +19,30 @@ export default async function TicketGroupPage() {
         .eq("email", user?.email)
         .single();
 
-        
-        if (error || !userRole) {
-            console.log("Error fetching role: ", error);
-            return redirect("/sign-in");
-        } 
-        
     const { data: ticketData, error: ticketError } = await supabase
         .from("tickets")
         .select()
 
-    if (ticketError) {
-        console.log("Error fetching ticket data", error);
+    const { data: appData, error: appError } = await supabase
+        .from("apps")
+        .select()
+        .eq("id", params.id)
+
+    if (appError || ticketError ) {
+        console.log("Error fetching data: ", appError);
     }
+
+    if (error || !userRole) {
+        console.log("Error fetching role: ", error);
+        return redirect("/sign-in");
+    } 
 
     const role = userRole.role;
 
     return (
         <div>
             {/* Temporary: to check if ticket card is working */}
+            <div>{appData[0].app_name}</div>
             {ticketData?.map((ticket) => (
                 <Dialog key={ticket.id}>
                     <DialogTrigger asChild>
