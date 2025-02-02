@@ -1,10 +1,14 @@
 import TicketCard from "@/components/ticket-card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTrigger, DialogDescription, DialogTitle } from "@/components/ui/dialog";
+import { deslugify } from "@/utils/slugify";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 
 export default async function TicketGroupPage({ params }: { params: { app_name: string } }) {
+    const { app_name } = params;
+    const appName = deslugify(app_name);
+    
     const supabase = await createClient();
 
     const { data: { user } } = await supabase.auth.getUser();
@@ -26,8 +30,8 @@ export default async function TicketGroupPage({ params }: { params: { app_name: 
     const { data: appData, error: appError } = await supabase
         .from("apps")
         .select()
-        .eq("id", params.id)
-
+        .ilike("app_name", appName);
+        
     if (appError || ticketError ) {
         console.log("Error fetching data: ", appError);
     }
