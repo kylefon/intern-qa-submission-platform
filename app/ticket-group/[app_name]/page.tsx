@@ -4,6 +4,15 @@ import { Dialog, DialogContent, DialogHeader, DialogTrigger, DialogDescription, 
 import { deslugify } from "@/utils/slugify";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
+import { InternTicketForm } from "@/components/intern-ticket-form";
+import { Separator } from "@/components/ui/separator";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+  } from "@/components/ui/select"
 
 export default async function TicketGroupPage({ params }: { params: Promise<{ app_name: string }> }) {
     const { app_name } = await params; 
@@ -33,6 +42,11 @@ export default async function TicketGroupPage({ params }: { params: Promise<{ ap
         .select()
         .ilike("app_name", appName);
         
+    const { data: appVersions, error: appVersionsError } = await supabase
+        .from("app_versions")
+        .select("*")
+        .eq("app_id", appData?.[0]?.id);
+
     if ( appError || ticketError ) {
         console.log("Error fetching data: ", appError);
     }
@@ -43,11 +57,32 @@ export default async function TicketGroupPage({ params }: { params: Promise<{ ap
     }
 
     const role = userRole.role;
+    
+    console.log("appData: ", appData);
+    console.log("appVersions: ", appVersions);
 
     return (
-        <div>
+        <div className="space-y-5">
             {/* Temporary: to check if ticket card is working */}
-            <div>{appData?.[0]?.app_name}</div>
+            <div className="flex w-full justify-between items-center">
+                <div>
+                    <h1 className="text-4xl font-extrabold">{appData?.[0]?.app_name}</h1>
+                    <h1>Place link here:</h1>
+                    <Select>
+                        <SelectTrigger>
+                            <SelectValue placeholder="Select a version..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {appVersions?.map((data) => (
+                                <SelectItem key={data.id} value={data.id.toString()}>{data.app_version}</SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
+                    <InternTicketForm />
+            </div>
+            <Separator />
+
             {ticketData?.map((ticket) => (
                 <Dialog key={ticket.id}>
                     <DialogTrigger asChild>
@@ -64,7 +99,6 @@ export default async function TicketGroupPage({ params }: { params: Promise<{ ap
                         <TicketCard ticketData={ticket} role={role}/>
                     </DialogContent>
                 </Dialog>
-
             ))}
         </div>
     )
