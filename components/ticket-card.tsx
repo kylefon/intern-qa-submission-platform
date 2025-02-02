@@ -18,10 +18,6 @@ export default async function TicketCard({ ticketData, role }) {
         console.log("Error fetching user: ", error)
     }
 
-    console.log("ticket data", ticketData);
-    console.log("user data", userData)
-
-
     return (
         <div className="space-y-2">
             <div className="grid grid-cols-2 gap-4">

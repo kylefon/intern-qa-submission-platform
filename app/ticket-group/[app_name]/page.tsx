@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTrigger, DialogDescription, 
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 
-export default async function TicketGroupPage({ params }: { params: { id: string } }) {
+export default async function TicketGroupPage({ params }: { params: { app_name: string } }) {
     const supabase = await createClient();
 
     const { data: { user } } = await supabase.auth.getUser();
