@@ -1,3 +1,4 @@
+import Link from "next/link";
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -5,6 +6,7 @@ import {
     CardHeader,
     CardTitle,
   } from "@/components/ui/card";
+import { slugify } from "@/utils/slugify";
 
 export function AppTickets({appName, type, description}) {
     return (
@@ -17,7 +19,9 @@ export function AppTickets({appName, type, description}) {
             </CardHeader>
             <div className="px-6 w-full">{description}</div>
             <div className="w-full py-6 px-6">
-                <Button className="w-full">View Tickets</Button>
+                <Link href={`/ticket-group/${encodeURIComponent(slugify(appName))}`}>
+                    <Button className="w-full">View Tickets</Button>
+                </Link>
             </div>
         </Card>
     )
