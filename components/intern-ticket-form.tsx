@@ -6,26 +6,22 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import {
     Select,
     SelectContent,
     SelectGroup,
     SelectItem,
-    SelectLabel,
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select"
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
@@ -69,7 +65,7 @@ export function InternTicketForm() {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button>Submit a ticket</Button>
+                    <Button>Submit a ticket</Button>
             </DialogTrigger>
             <DialogContent className="overflow-y-scroll max-h-screen">
                 <DialogHeader>
