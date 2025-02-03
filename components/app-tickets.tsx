@@ -19,7 +19,7 @@ export function AppTickets({appName, type, description}) {
             </CardHeader>
             <div className="px-6 w-full">{description}</div>
             <div className="w-full py-6 px-6">
-                <Link target="_blank" href={`/ticket-group/${encodeURIComponent(slugify(appName))}`}>
+                <Link href={`/ticket-group/${encodeURIComponent(slugify(appName))}`}>
                     <Button className="w-full">View Tickets</Button>
                 </Link>
             </div>

@@ -37,9 +37,9 @@ export default async function ProtectedPage() {
     <div className="flex-1 w-full flex flex-col gap-12">
       <div className="w-full">
         {role==="admin" ? (
-          <div>
-            <DashboardHeader appData={appData}/>
-          </div>
+            <div>
+              <DashboardHeader appData={appData}/>
+            </div>
         ) : <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 auto-cols-fr">
           {appData.map((data) => (
             <AppTickets key={data.id} appName={data.app_name} type={data.type} description={"Ollopa number 1 company"} />

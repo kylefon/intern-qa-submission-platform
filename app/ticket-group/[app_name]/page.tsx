@@ -13,54 +13,38 @@ import {
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select"
+import { getAppData, getAppTickets, getAppVersions, getUserRole, validateUserSignIn } from "./actions";
 
 export default async function TicketGroupPage({ params }: { params: Promise<{ app_name: string }> }) {
     const { app_name } = await params; 
 
     const appName = deslugify(app_name);
 
-    const supabase = await createClient();
-
-    const { data: { user } } = await supabase.auth.getUser();
-
+    const {user, userError} = await validateUserSignIn();
+    if (userError) {
+        return `${userError}`
+    } 
     if (!user) {
-    return redirect("/sign-in");
+        return redirect("/sign-in");
     }
 
-    const { data: userRole, error } = await supabase
-        .from("users")
-        .select("role")
-        .eq("email", user?.email)
-        .single();
-
-    const { data: ticketData, error: ticketError } = await supabase
-        .from("tickets")
-        .select()
-
-    const { data: appData, error: appError } = await supabase
-        .from("apps")
-        .select()
-        .ilike("app_name", appName);
-        
-    const { data: appVersions, error: appVersionsError } = await supabase
-        .from("app_versions")
-        .select("*")
-        .eq("app_id", appData?.[0]?.id);
+    const getUserRoleResult = await getUserRole(user?.email);
+    const {userRole, userRoleError} = getUserRoleResult;
+    const {data: ticketData, error: ticketError} = await getAppTickets(appName);
+    const { data: appData, error: appError } = await getAppData(appName);
+    const { data: appVersions, error: appVersionsError } = await getAppVersions(appData?.[0]?.id);
 
     if ( appError || ticketError ) {
         console.log("Error fetching data: ", appError);
     }
 
-    if (error || !userRole) {
-        console.log("Error fetching role: ", error);
+    if (userRoleError || !userRole) {
+        console.log("Error fetching role: ", userRoleError);
         return redirect("/sign-in");
     }
 
     const role = userRole.role;
     
-    console.log("appData: ", appData);
-    console.log("appVersions: ", appVersions);
-
     return (
         <div className="space-y-5">
             {/* Temporary: to check if ticket card is working */}
@@ -79,7 +63,7 @@ export default async function TicketGroupPage({ params }: { params: Promise<{ ap
                         </SelectContent>
                     </Select>
                 </div>
-                    <InternTicketForm />
+                <InternTicketForm version="1" />
             </div>
             <Separator />
 
