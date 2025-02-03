@@ -73,9 +73,9 @@ export default async function TicketGroupPage({ params }: { params: Promise<{ ap
                             <SelectValue placeholder="Select a version..." />
                         </SelectTrigger>
                         <SelectContent>
-                            {appVersions?.map((data) => (
+                            {appVersions?.length > 1 ? (appVersions?.map((data) => (
                                 <SelectItem key={data.id} value={data.id.toString()}>{data.app_version}</SelectItem>
-                            ))}
+                            ))) : <SelectItem value="N/A">No Versions Found...</SelectItem>}
                         </SelectContent>
                     </Select>
                 </div>
