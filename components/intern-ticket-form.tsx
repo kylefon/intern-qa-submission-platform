@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button"
 import {
@@ -30,6 +30,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
+import { createClient } from "@/utils/supabase/client";
 
 const MAX_FILE_SIZE = 5_000_000;
 const ACCEPTED_IMAGE_TYPES = ["images/jpeg", "image/jpg", "image/png", "image/webp"];
@@ -46,7 +47,7 @@ const formSchema = z.object({
                 ),
 });
 
-export function InternTicketForm() {
+export function InternTicketForm({ version }) {
     const [selectedImage, setSelectedImage] = useState(null);
     // ticketName, fixType, description, screenshot, status (always NEW), app_id, app_version_id
     const form = useForm<z.infer<typeof formSchema>>({
@@ -58,8 +59,39 @@ export function InternTicketForm() {
         },
     });
 
-    const onSubmit = (values: z.infer<typeof formSchema>) => {
-        console.log(values);
+    // const onSubmit = (values: z.infer<typeof formSchema>) => {
+    //     const supabase = createClient();
+    //     const { data: {user} } = supabase.auth.getUser();
+    //     console.log(data);
+    // }
+
+    async function onSubmit(values: z.infer<typeof formSchema>) {
+        console.log(version);
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        console.log(user);
+
+        const { data: currentUser, error } = await supabase
+            .from('users')
+            .select('*')
+            .eq("email", user.email);
+        
+        // if (currentUser?.aud === "authenticated") {
+        //     const { data, error } = await supabase
+        //         .from('tickets')
+        //         .insert([
+        //             {
+        //                 ticket_title: values.ticketTitle.toString(),
+        //                 description: values.description.toString(),
+        //                 type_of_fix: values.fixType.toString(),
+        //                 screenshot: "Test",
+        //                 status: "NEW",
+        //                 submitted_by: user?.email,
+        //                 app_version_id: 
+        //             }
+        //         ])
+        // }
+
     }
 
     return (

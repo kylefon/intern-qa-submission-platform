@@ -11,7 +11,7 @@ export default async function TicketCard({ ticketData, role }) {
     const { data: userData, error } = await supabase
         .from("users")
         .select()
-        .eq("id", ticketData.submitted_by)
+        .eq("id", ticketData.submitted_by.id)
         .single();
 
     if (error) {
