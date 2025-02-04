@@ -1,3 +1,4 @@
+import AddTicketGroupButton from "@/components/add-group-button";
 import { AppTickets } from "@/components/app-tickets";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList } from "@/components/ui/tabs";

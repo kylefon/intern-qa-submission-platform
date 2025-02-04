@@ -13,6 +13,7 @@ import {
     SelectValue,
   } from "@/components/ui/select"
 import { getAppData, getAppTickets, getAppVersions, getUserRole, validateUserSignIn } from "./actions";
+import AddTicketGroupButton from "@/components/add-group-button";
 
 export default async function TicketGroupPage({ params }: { params: Promise<{ app_name: string }> }) {
     const { app_name } = await params; 
@@ -72,7 +73,7 @@ export default async function TicketGroupPage({ params }: { params: Promise<{ ap
                         {/* Testing button only should be the button from table*/}
                         <Button>TEST TICKET CARD</Button>
                     </DialogTrigger>
-                    <DialogContent>
+                    <DialogContent className="overflow-y-auto max-h-[80vh]">
                         <DialogHeader>
                             <DialogTitle>{ticket.ticket_title}</DialogTitle>
                             <DialogDescription>
