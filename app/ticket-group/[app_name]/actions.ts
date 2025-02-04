@@ -54,8 +54,7 @@ export async function addTicketToServer(submittedForm: FormData, appName: string
                 // Other metadata.
                 app_id: translatedAppName?.[0]?.id.toString(),
                 app_version_id: translatedAppVersion?.[0]?.id.toString(),
-                submitted_by: translatedId?.[0]?.id.toString(),
-                updated_at: new Date().toISOString()
+                submitted_by: translatedId?.[0]?.id.toString()
             }
         ])
         .select();
