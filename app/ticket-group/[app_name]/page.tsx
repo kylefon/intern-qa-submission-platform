@@ -2,7 +2,6 @@ import TicketCard from "@/components/ticket-card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTrigger, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { deslugify } from "@/utils/slugify";
-import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { InternTicketForm } from "@/components/intern-ticket-form";
 import { Separator } from "@/components/ui/separator";
@@ -63,7 +62,7 @@ export default async function TicketGroupPage({ params }: { params: Promise<{ ap
                         </SelectContent>
                     </Select>
                 </div>
-                <InternTicketForm version="1" />
+                <InternTicketForm appVersion="0.0.8" appName={appName} />
             </div>
             <Separator />
 
