@@ -1,4 +1,5 @@
 "use client"
+import { Loader2 } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button"
@@ -30,7 +31,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
-import { createClient } from "@/utils/supabase/client";
+import { addTicketToServer } from "@/app/ticket-group/[app_name]/actions";
 
 const MAX_FILE_SIZE = 5_000_000;
 const ACCEPTED_IMAGE_TYPES = ["images/jpeg", "image/jpg", "image/png", "image/webp"];
@@ -47,7 +48,7 @@ const formSchema = z.object({
                 ),
 });
 
-export function InternTicketForm({ version }) {
+export function InternTicketForm({ appName, appVersion }) {
     const [selectedImage, setSelectedImage] = useState(null);
     // ticketName, fixType, description, screenshot, status (always NEW), app_id, app_version_id
     const form = useForm<z.infer<typeof formSchema>>({
@@ -59,52 +60,35 @@ export function InternTicketForm({ version }) {
         },
     });
 
-    // const onSubmit = (values: z.infer<typeof formSchema>) => {
-    //     const supabase = createClient();
-    //     const { data: {user} } = supabase.auth.getUser();
-    //     console.log(data);
-    // }
-
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(version);
-        const supabase = createClient();
-        const { data: { user } } = await supabase.auth.getUser();
-        console.log(user);
-
-        const { data: currentUser, error } = await supabase
-            .from('users')
-            .select('*')
-            .eq("email", user.email);
-        
-        // if (currentUser?.aud === "authenticated") {
-        //     const { data, error } = await supabase
-        //         .from('tickets')
-        //         .insert([
-        //             {
-        //                 ticket_title: values.ticketTitle.toString(),
-        //                 description: values.description.toString(),
-        //                 type_of_fix: values.fixType.toString(),
-        //                 screenshot: "Test",
-        //                 status: "NEW",
-        //                 submitted_by: user?.email,
-        //                 app_version_id: 
-        //             }
-        //         ])
-        // }
-
+        setIsSubmitting(true);
+        try {
+            const formData = new FormData();
+            formData.append("ticket_name", values.ticketTitle);
+            formData.append("type_of_fix", values.fixType);
+            formData.append("description", values.description);
+            formData.append("screenshot", values.screenshot);
+            await addTicketToServer(formData, appName, appVersion);
+        } catch (error) {
+            console.error("Submitting failed!", error);
+        } finally {
+            setIsSubmitting(false);
+        }
     }
 
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+
     return (
-        <Dialog>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-                    <Button>Submit a ticket</Button>
+                    <Button onClick={() => setIsDialogOpen(true)}>Submit a ticket</Button>
             </DialogTrigger>
             <DialogContent className="overflow-y-scroll max-h-screen">
                 <DialogHeader>
                     <DialogTitle>Submit a Ticket</DialogTitle>
                     <DialogDescription>Submit your ticket by filling out the forms.</DialogDescription>
                 </DialogHeader>
-
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)}>
                         <FormField 
@@ -200,8 +184,22 @@ export function InternTicketForm({ version }) {
                             />
                         </div>
                         <div className="flex justify-end space-x-1">
-                            <Button>Cancel</Button>
-                            <Button type="submit">Submit</Button>
+                            <Button type="button" onClick={() => setIsDialogOpen(false)} disabled={isSubmitting}>Cancel</Button>
+                            <Button type="submit" disabled={isSubmitting}>
+                                {isSubmitting ? 
+                                (
+                                    <div className="flex items-center">
+                                        <Loader2 className="animate-spin" />
+                                        Submitting...
+                                    </div>
+                                ) : 
+                                (
+                                    <div>
+                                        Submit
+                                    </div>
+                                )
+                                }
+                            </Button>
                         </div>
                     </form>
                 </Form>
