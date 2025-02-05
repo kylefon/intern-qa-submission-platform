@@ -9,7 +9,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel } from "./ui/form";
 import { Button } from "./ui/button";
 import { Dialog, DialogFooter, DialogHeader, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger} from "./ui/dialog";
 import { useForm } from "react-hook-form";
-import { addTicketGroup } from "@/app/ticket-group/[app_name]/actions";
+import { addTicketGroup } from "@/utils/actions";
 
 const FormSchema = z.object({
     app_name: z.string(),

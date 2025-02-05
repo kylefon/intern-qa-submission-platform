@@ -31,7 +31,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
-import { addTicketToServer } from "@/app/ticket-group/[app_name]/actions";
+import { addTicketToServer } from "@/utils/actions";
 
 const MAX_FILE_SIZE = 5_000_000;
 const ACCEPTED_IMAGE_TYPES = ["images/jpeg", "image/jpg", "image/png", "image/webp"];
