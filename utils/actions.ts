@@ -220,3 +220,39 @@ export async function addTicketGroup(data) {
     
     return { appGroupData, appGroupError };
 }
+
+export async function editTicketGroup(data, id) {
+    const supabase = await createClient();
+
+    console.log("Trying to change it to ", data);
+    console.log("id edit = ", id)
+
+    const { data: userData, error: userError } = await getIdFromAuthId();
+
+    const { data: appGroupData , error: appGroupError } = await supabase
+        .from("apps")   
+        .update({
+            app_name: data.app_name,
+            type: data.type,
+            link: data.link,
+            created_by: userData?.[0]?.id,
+            description: data.description
+        })
+        .eq("id", id)
+        .select()
+
+        if (appGroupData) {
+            console.log("SUCCESSFULLY EDITED GROUP", appGroupData);
+        }
+
+        if (appGroupError) {
+            console.log("Error editing group ", appGroupError);
+        }
+
+        if (userError) {
+            console.log("Error verifying user id", userError);
+        }
+
+    
+    return { appGroupData, appGroupError };
+}

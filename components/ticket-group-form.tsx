@@ -9,7 +9,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel } from "./ui/form";
 import { Button } from "./ui/button";
 import { Dialog, DialogFooter, DialogHeader, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger} from "./ui/dialog";
 import { useForm } from "react-hook-form";
-import { addTicketGroup } from "@/utils/actions";
+import { addTicketGroup, editTicketGroup } from "@/utils/actions";
 
 const FormSchema = z.object({
     app_name: z.string(),
@@ -18,14 +18,26 @@ const FormSchema = z.object({
     description: z.string().max(255).optional(),
 })
 
-export default function AddTicketGroupButton() {    
+interface TicketGroupProps {
+    initialData?: {
+        id: string;
+        app_name: string;
+        type: string;
+        link: string;
+        description?: string;
+    };
+}
+
+export default function TicketGroupForm({ initialData }: TicketGroupProps) {   
+    const isEditing = !!initialData;
+
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: {
-            app_name: "",
-            type: "",
-            link: "",
-            description: "",
+            app_name: initialData?.[0]?.app_name ?? "", 
+            type: initialData?.[0]?.type ?? "",
+            link: initialData?.[0]?.link ?? "",
+            description: initialData?.[0]?.description ?? "",
         },
     });
 
@@ -33,14 +45,22 @@ export default function AddTicketGroupButton() {
     const { errors } = formState;
     
     async function onSubmit(data: z.infer<typeof FormSchema>) {
-        const { appGroupData, appGroupError } = await addTicketGroup(data);
-
-        if (appGroupError) {
-            console.log("Error adding ticket group: ")
-        }
-
-        if (appGroupData) {
-            console.log("Successfully added ticket group");
+        if (isEditing) {
+            const { appGroupData, appGroupError } = await editTicketGroup(data, initialData[0].id);
+            if (appGroupError) {
+                console.log("Error adding ticket group: ")
+            }
+            if (appGroupData) {
+                console.log("Successfully edited ticket group");
+            }
+        } else {
+            const { appGroupData, appGroupError } = await addTicketGroup(data);
+            if (appGroupError) {
+                console.log("Error adding ticket group: ")
+            }
+            if (appGroupData) {
+                console.log("Successfully added ticket group");
+            }
         }
     }
     
@@ -48,12 +68,24 @@ export default function AddTicketGroupButton() {
         <div className="space-y-2">
             <Dialog>
                 <DialogTrigger asChild>
-                    <Button className="w-full md:w-auto bg-green-500">Add Ticket Group</Button>
+                    { isEditing ? (
+                        <Button variant="outline">
+                            Edit Ticket Group
+                        </Button>
+                    ) : (
+                        <Button className="w-full md:w-auto bg-green-500">
+                            Add Ticket Group
+                        </Button>
+                    )}
                 </DialogTrigger>
                 <DialogContent className="max-h-[80vh] overflow-y-auto">
                     <DialogHeader>
-                        <DialogTitle>Add Ticket Group</DialogTitle>
-                        <DialogDescription>Add ticket groups for interns to submit their tickets</DialogDescription>
+                        <DialogTitle>
+                            {isEditing ? "Edit Ticket Group" : "Add Ticket Group"}
+                        </DialogTitle>
+                        <DialogDescription>                            
+                            {isEditing ? "Modify the ticket group details" : "Add a new ticket group for interns to submit their tickets"}
+                        </DialogDescription>
                     </DialogHeader>
                     <Form {...form}>
                         <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
@@ -77,7 +109,7 @@ export default function AddTicketGroupButton() {
                                         <FormLabel>Event Type</FormLabel>
                                         <Select
                                             onValueChange={field.onChange}
-                                            defaultValue={field.value}
+                                            defaultValue={field.value || ""}
                                         >
                                             <FormControl>
                                                 <SelectTrigger>

@@ -13,6 +13,7 @@ import {
     SelectValue,
   } from "@/components/ui/select"
   import { getAppData, getAppVersions, getUserRole, validateUserSignIn, getAppTickets } from "@/utils/actions";
+import TicketGroupForm from "@/components/ticket-group-form";
 
 export default async function TicketGroupPage({ params }: { params: Promise<{ app_name: string }> }) {
     const { app_name } = await params; 
@@ -62,7 +63,10 @@ export default async function TicketGroupPage({ params }: { params: Promise<{ ap
                         </SelectContent>
                     </Select>
                 </div>
-                <InternTicketForm appVersion="0.0.8" appName={appName} />
+                <div className="flex gap-2">
+                    <TicketGroupForm initialData={appData}/>
+                    <InternTicketForm appVersion="0.0.8" appName={appName} />
+                </div>
             </div>
             <Separator />
 

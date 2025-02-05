@@ -1,4 +1,4 @@
-import AddTicketGroupButton from "@/components/add-group-button";
+import TicketGroupForm from "@/components/ticket-group-form";
 import { AppTickets } from "@/components/app-tickets";
 import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/ui/tabs";
 
@@ -12,7 +12,7 @@ export default function DashboardHeader({ appData }: any) {
                         <TabsTrigger value="history">History</TabsTrigger>
                     </TabsList>
                     <TabsContent value="group" className="w-full md:w-auto bg-green-500 rounded">
-                        <AddTicketGroupButton />
+                        <TicketGroupForm />
                     </TabsContent>
                 </div>
                 <TabsContent value="group">
