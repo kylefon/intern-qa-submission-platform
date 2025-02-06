@@ -7,7 +7,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "./ui/form";
-import { addTicketUpdate, getUserDataById, updateTicketCard } from "@/app/ticket-group/[app_name]/actions";
+import { addTicketUpdate, getUserDataById, updateTicketCard } from "@/utils/actions";
 import { useEffect, useState } from "react";
 import { Loader } from "lucide-react";
 import { Label } from "./ui/label";
@@ -42,8 +42,8 @@ export default function TicketCard({ ticketData, role }) {
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: {
-            status: ticketData.status,
-            remarks: ticketData.remarks,
+            status: ticketData.status ?? "",
+            remarks: ticketData.remarks ?? "",
         },
     });
 
@@ -168,7 +168,7 @@ export default function TicketCard({ ticketData, role }) {
                   </div>
                 </div>
               )}
-              <Button type="submit" disabled={isSubmitting}>
+              <Button type="submit" disabled={isSubmitting} className="flex-shrink-0 mt-2">
                   {isSubmitting ? <Loader size={16} /> : "Submit"}
               </Button>
             </form>
