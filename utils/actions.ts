@@ -1,5 +1,6 @@
 "use server";
 import { createClient } from "@/utils/supabase/server";
+import { Description } from "@radix-ui/react-dialog";
 import { randomUUID, UUID } from "crypto";
 
 export async function addTicketToServer(submittedForm: FormData, appName: string, appVersion: string) {
@@ -100,6 +101,7 @@ export async function getAppTickets(appName: string) {
         type_of_fix,
         screenshot,
         status,
+        remarks,
         submitted_by: submitted_by (id),
         app: app_id (app_name),
         app_version: app_version_id (app_version)
@@ -124,4 +126,133 @@ export async function getAppVersions(appId: string) {
         .select("*")
         .eq("app_id", appId);
     return {data: appVersions, error: appVersionsError}
+}
+
+export async function getUserDataById(userId: string) {
+    const supabase = await createClient();
+    const { data: userData, error: userDataError } = await supabase
+        .from("users")
+        .select()
+        .eq("id", userId)
+        .single();
+    return { data: userData, error: userDataError };
+}
+
+export async function updateTicketCard(status: string, remarks: string, id: string) {
+    const supabase = await createClient();
+
+    const { data: appUpdate, error: appError } = await supabase
+        .from("tickets")
+        .update({
+            status: status,
+            remarks: remarks || null
+        })
+        .eq("id", id)
+        .select()
+    
+    if (appError) {
+        console.error("Error updating ticket:", appError);
+    } else {
+        console.log("Ticket updated successfully:");
+    }
+
+    return { data: appUpdate, error: appError };
+}
+
+export async function addTicketUpdate(id: string, status: string, remarks: string, user_id: string) {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+        .from("ticket_updates")
+        .insert({
+            ticket_id: id,
+            updated_by: user_id,
+            status: status,
+            notes: remarks,
+        })
+    if (error) {
+        console.log("Error adding ticket update", error)
+    } else {
+        console.log("Successfully added to ticket update", data);
+    }
+
+    return { data, error }
+}
+
+export async function getIdFromAuthId() {
+    const supabase = await createClient();
+    const {data: { user } } = await supabase.auth.getUser();
+
+    const { data, error } = await supabase
+        .from("users")
+        .select("id")
+        .eq("auth_id", user?.id)
+        
+    return { data, error };
+}
+
+export async function addTicketGroup(data) {
+    const supabase = await createClient();
+
+    const { data: userData, error: userError } = await getIdFromAuthId();
+
+    const { data: appGroupData , error: appGroupError } = await supabase
+        .from("apps")   
+        .insert({
+            app_name: data.app_name,
+            type: data.type,
+            link: data.link,
+            created_by: userData?.[0]?.id,
+            description: data.description
+        })
+
+        if (appGroupData) {
+            console.log("SUCCESSFULLY ADDED GROUP", appGroupData);
+        }
+
+        if (appGroupError) {
+            console.log("Error submitting group ", appGroupError);
+        }
+
+        if (userError) {
+            console.log("Error verifying user id", userError);
+        }
+
+    
+    return { appGroupData, appGroupError };
+}
+
+export async function editTicketGroup(data, id) {
+    const supabase = await createClient();
+
+    console.log("Trying to change it to ", data);
+    console.log("id edit = ", id)
+
+    const { data: userData, error: userError } = await getIdFromAuthId();
+
+    const { data: appGroupData , error: appGroupError } = await supabase
+        .from("apps")   
+        .update({
+            app_name: data.app_name,
+            type: data.type,
+            link: data.link,
+            created_by: userData?.[0]?.id,
+            description: data.description
+        })
+        .eq("id", id)
+        .select()
+
+        if (appGroupData) {
+            console.log("SUCCESSFULLY EDITED GROUP", appGroupData);
+        }
+
+        if (appGroupError) {
+            console.log("Error editing group ", appGroupError);
+        }
+
+        if (userError) {
+            console.log("Error verifying user id", userError);
+        }
+
+    
+    return { appGroupData, appGroupError };
 }

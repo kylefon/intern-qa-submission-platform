@@ -13,7 +13,8 @@ import {
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select"
-import { getAppData, getAppTickets, getAppVersions, getUserRole, validateUserSignIn } from "./actions";
+  import { getAppData, getAppVersions, getUserRole, validateUserSignIn, getAppTickets } from "@/utils/actions";
+import TicketGroupForm from "@/components/ticket-group-form";
 
 export default async function TicketGroupPage({ params }: { params: Promise<{ app_name: string }> }) {
     const { app_name } = await params; 
@@ -48,22 +49,29 @@ export default async function TicketGroupPage({ params }: { params: Promise<{ ap
     return (
         <div className="space-y-5">
             {/* Temporary: to check if ticket card is working */}
-            <div className="flex w-full justify-between items-center">
-                <div>
-                    <h1 className="text-4xl font-extrabold">{appData?.[0]?.app_name}</h1>
-                    <h1>Place link here:</h1>
-                    <Select>
-                        <SelectTrigger>
-                            <SelectValue placeholder="Select a version..." />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {appVersions?.length > 1 ? (appVersions?.map((data) => (
-                                <SelectItem key={data.id} value={data.id.toString()}>{data.app_version}</SelectItem>
-                            ))) : <SelectItem value="N/A">No Versions Found...</SelectItem>}
-                        </SelectContent>
-                    </Select>
+            <div className="flex flex-col w-full space-y-2 items-start">
+                <h1 className="text-4xl font-extrabold">{appData?.[0]?.app_name}</h1>
+                <div className="flex flex-col gap-2 justify-between w-full sm:flex-row sm:items-end ">
+                    <div className="w-full sm:w-[40%]">
+                        <h1>Place link here:</h1>
+                        <Select>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select a version..." />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {appVersions?.length > 1 ? (appVersions?.map((data) => (
+                                    <SelectItem key={data.id} value={data.id.toString()}>{data.app_version}</SelectItem>
+                                ))) : <SelectItem value="N/A">No Versions Found...</SelectItem>}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div className="flex gap-2">
+                        { role === "admin" && (
+                            <TicketGroupForm initialData={appData}/>
+                        )}
+                        <InternTicketForm appVersion="0.0.8" appName={appName} />
+                    </div>
                 </div>
-                <InternTicketForm appVersion="0.0.8" appName={appName} />
             </div>
             <Separator />
                 <TableData app_id={appData[0].id} />
@@ -74,7 +82,7 @@ export default async function TicketGroupPage({ params }: { params: Promise<{ ap
                         {/* Testing button only should be the button from table*/}
                         <Button>TEST TICKET CARD</Button>
                     </DialogTrigger>
-                    <DialogContent>
+                    <DialogContent className="overflow-y-auto max-h-[80vh]">
                         <DialogHeader>
                             <DialogTitle>{ticket.ticket_title}</DialogTitle>
                             <DialogDescription>
