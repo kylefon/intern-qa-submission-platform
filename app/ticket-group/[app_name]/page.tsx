@@ -5,6 +5,7 @@ import { deslugify } from "@/utils/slugify";
 import { redirect } from "next/navigation";
 import { InternTicketForm } from "@/components/intern-ticket-form";
 import { Separator } from "@/components/ui/separator";
+import TableData from "@/components/tableData/history-data";
 import {
     Select,
     SelectContent,
@@ -65,6 +66,7 @@ export default async function TicketGroupPage({ params }: { params: Promise<{ ap
                 <InternTicketForm appVersion="0.0.8" appName={appName} />
             </div>
             <Separator />
+                <TableData app_id={appData[0].id} />
 
             {ticketData?.map((ticket) => (
                 <Dialog key={ticket.id}>
