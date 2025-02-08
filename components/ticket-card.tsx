@@ -11,6 +11,8 @@ import { addTicketUpdate, getUserDataById, updateTicketCard } from "@/utils/acti
 import { useEffect, useState } from "react";
 import { Loader } from "lucide-react";
 import { Label } from "./ui/label";
+import { daysToWeeks } from "date-fns";
+import { data } from "autoprefixer";
 
 const FormSchema = z.object({
     status: z.string(),
@@ -25,7 +27,7 @@ export default function TicketCard({ ticketData, role }) {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const { data, error } = await getUserDataById(ticketData.submitted_by.id);
+                const { data, error } = await getUserDataById(ticketData.submitted_by);
                 if (data) {
                     setUserData(data);
                 } else {
@@ -37,7 +39,9 @@ export default function TicketCard({ ticketData, role }) {
         };
 
         fetchUserData();
-    }, [ticketData.submitted_by.id]);
+    }, [ticketData.submitted_by]);
+    // console.log("ticket Data:",ticketData); //console log of ticket data
+   
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
@@ -45,6 +49,7 @@ export default function TicketCard({ ticketData, role }) {
             status: ticketData.status ?? "",
             remarks: ticketData.remarks ?? "",
         },
+       
     });
 
     const { control, handleSubmit } = form;

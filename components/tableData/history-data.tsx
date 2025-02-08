@@ -7,7 +7,7 @@ export default async function TableData({ app_id }) {
 
     const { data: ticketData } = await supabase
         .from("tickets")
-        .select("ticket_title, created_at, status, type_of_fix, description, apps(app_name), app_versions(app_version), users(email)")
+        .select("ticket_title, submitted_by, id, created_at, status, type_of_fix, description, screenshot, remarks, apps(app_name), app_versions(app_version), users(email)")
         .eq("app_id", app_id);
 
     const flattenedData = ticketData?.map((ticket) => ({
@@ -17,8 +17,12 @@ export default async function TableData({ app_id }) {
         status: ticket.status || "N/A",
         type_of_fix: ticket.type_of_fix || "N/A",
         description: ticket.description || "No description",
-        created_at: ticket.created_at ? new Date(ticket.created_at) : new Date(), // Pass as Date object
+        created_at: ticket.created_at  || "No Date",
         updated_by: ticket.users?.email || "N/A",
+        screenshot: ticket.screenshot || "N/A",
+        remarks: ticket.remarks || "N/A",
+        submitted_by: ticket.submitted_by || "N/A",
+        id: ticket.id || "N/A",
     })) || [];
 
     console.log(flattenedData); // Verify that created_at is a Date object

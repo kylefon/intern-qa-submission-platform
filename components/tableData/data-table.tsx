@@ -41,14 +41,17 @@ import { Ticket } from "lucide-react"
 
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: TData[]
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
+  role?: string; // Add role as an optional prop
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  role, // Destructure it
 }: DataTableProps<TData, TValue>) {
+
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [selectedRow, setSelectedRow] = useState<TData | null>(null);
@@ -107,8 +110,7 @@ export function DataTable<TData, TValue>({
           <TableBody>
   {table.getRowModel().rows?.length ? (
     table.getRowModel().rows.map((row) => (
-      <Dialog key={row.id} open={openDialog} onOpenChange={setOpenDialog}>
-        <DialogTrigger asChild>
+     
           <TableRow
             key={row.id}
             data-state={row.getIsSelected() && "selected"}
@@ -119,6 +121,7 @@ export function DataTable<TData, TValue>({
           >
             {row.getVisibleCells().map((cell) => {
               const columnMeta = cell.column.columnDef.meta || {};
+              // console.log("selectedRow:",selectedRow);
               return (
                 <TableCell
                   key={cell.id}
@@ -129,15 +132,10 @@ export function DataTable<TData, TValue>({
                 >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </TableCell>
+                
               );
             })}
           </TableRow>
-        </DialogTrigger>
-
-        <DialogContent>
-          <TicketCard ticketData={selectedRow} role={role} />
-        </DialogContent>
-      </Dialog>
     ))
   ) : (
     <TableRow>
@@ -148,8 +146,25 @@ export function DataTable<TData, TValue>({
   )}
 </TableBody>
 
+  <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+  <DialogContent className="overflow-y-auto max-h-[80vh]">
+    {selectedRow ? (
+      <>
+        <DialogHeader>
+          <DialogTitle>{selectedRow.ticket_title}</DialogTitle>
+          <DialogDescription>{selectedRow.description}</DialogDescription>
+        </DialogHeader>
+        <TicketCard ticketData={selectedRow} role={role} />
+      </>
+    ) : (
+      <p>Loading...</p> // Handle the case where selectedRow is null
+    )}
+  </DialogContent>
+</Dialog>
+
         </Table>
       </div>
+      
 
       {/* Pagination */}
       <div className="flex items-center justify-end space-x-2 py-4">
