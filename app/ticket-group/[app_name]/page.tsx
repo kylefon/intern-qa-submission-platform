@@ -5,7 +5,7 @@ import { deslugify } from "@/utils/slugify";
 import { redirect } from "next/navigation";
 import { InternTicketForm } from "@/components/intern-ticket-form";
 import { Separator } from "@/components/ui/separator";
-import TableData from "@/components/tableData/history-data";
+import TableData from "@/components/tableData/table-data";
 import {
     Select,
     SelectContent,
