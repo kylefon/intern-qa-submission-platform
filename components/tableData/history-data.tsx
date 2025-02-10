@@ -1,17 +1,22 @@
-import { createClient } from "@/utils/supabase/server";
+"use client";
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
+import { useEffect, useState } from "react";
+import { getAppTickets } from "@/utils/actions";
 
-export default async function TableData({ app_id, role }) {
-    console.log(role);
-    const supabase = await createClient();
 
-    const { data: ticketData } = await supabase
-        .from("tickets")
-        .select(
-            "ticket_title, created_at, status, type_of_fix, description, apps(app_name), app_versions(app_version), submitted_by(id), screenshot")
-        .eq("app_id", app_id);
-    
+export default function TableData({ appName, role, selectedVersion }) {
+    const [ticketData, setTicketData] = useState([]);
+    const [versionLink, setVersionLink] = useState("");
+    useEffect(() => {
+        const fetchTickets = async () => {
+            const {data: tickets, error: ticketsError, versionLink: versionLink} = await getAppTickets(appName, selectedVersion);
+            setVersionLink(versionLink);
+            setTicketData(tickets);
+        }
+        fetchTickets();
+    }, [selectedVersion]);
+
     const flattenedData = ticketData?.map((ticket) => ({
         ticket_title: ticket.ticket_title,
         app_name: ticket.apps?.app_name || "N/A",
@@ -24,9 +29,10 @@ export default async function TableData({ app_id, role }) {
         submitted_by: ticket.submitted_by,
         screenshot: ticket.screenshot
     })) || [];
+    
 
     return (
-        <div className="container mx-auto py-10">
+        <div className="container px-0 py-0">
             <DataTable columns={columns} data={flattenedData} role={role}/>
         </div>
     );

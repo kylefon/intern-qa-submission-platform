@@ -15,9 +15,6 @@ import {
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
@@ -33,30 +30,23 @@ import {
 
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
-import React from "react"
 import { useState } from "react"
 import TicketCard from "../ticket-card"
-// import { Dialog, DialogTrigger } from "@radix-ui/react-dialog"
-import { getUserRole, validateUserSignIn } from "@/utils/actions"
 
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
   role: any
+  selectedVersion: string
 }
 
-export function DataTable<TData, TValue>({columns, data, role}: DataTableProps<TData, TValue>) {
-  console.log("Data table loaded.");
-  console.log(role);
-  
-  const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
+export function DataTable<TData, TValue>({columns, data, role, selectedVersion}: DataTableProps<TData, TValue>) {
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [selectedRow, setSelectedRow] = useState<TData | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
   
-  console.log(selectedRow);
-
   const table = useReactTable({
     data,
     columns,
@@ -165,7 +155,7 @@ export function DataTable<TData, TValue>({columns, data, role}: DataTableProps<T
         <Button
           variant="outline"
           size="sm"
-          onClick={() => table.previousPage()}
+          onClick={() => {table.previousPage()}}
           disabled={!table.getCanPreviousPage()}
         >
           Previous
@@ -173,7 +163,7 @@ export function DataTable<TData, TValue>({columns, data, role}: DataTableProps<T
         <Button
           variant="outline"
           size="sm"
-          onClick={() => table.nextPage()}
+          onClick={() => {table.nextPage()}}
           disabled={!table.getCanNextPage()}
         >
           Next

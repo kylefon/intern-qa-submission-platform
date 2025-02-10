@@ -1,7 +1,34 @@
 "use server";
 import { createClient } from "@/utils/supabase/server";
-import { Description } from "@radix-ui/react-dialog";
-import { randomUUID, UUID } from "crypto";
+import { randomUUID } from "crypto";
+
+export async function getVersionLink(version) {
+    const supabase = await createClient();
+    const { data: versionLink, error } = await supabase
+        .from('app_versions')
+        .select("link")
+        .eq("id", version)
+        .single();
+    console.log(versionLink);
+    return versionLink;
+}
+
+export async function fetchAppData(appName) {
+    const { user, userError } = await validateUserSignIn();
+    const getUserRoleResult = await getUserRole(user?.email);
+    const { userRole, userRoleError } = getUserRoleResult;
+    const { data: ticketData, error: ticketError } = await getAppTickets(appName);
+    const { data: appData, error: appError } = await getAppData(appName);
+    const { data: appVersions, error: appVersionsError } = await getAppVersions(appData?.[0]?.id);
+
+    return {
+        user,
+        role: userRole,
+        appData,
+        appVersions,
+        ticketData
+    };
+}
 
 export async function addTicketToServer(submittedForm: FormData, appName: string, appVersion: string) {
     const { user, userError } = await validateUserSignIn();
@@ -84,13 +111,35 @@ export async function getUserRole(email: string | undefined) {
     return {userRole: userRole, userRoleError: error}
 } 
 
-export async function getAppTickets(appName: string) {
+export async function getAppTicketsUsingId(appId: string) {
+    const supabase = await createClient();
+
+    const { data: ticketData, error: ticketDataError } = await supabase
+        .from("tickets")
+        .select(
+            "ticket_title, created_at, status, type_of_fix, description, apps(app_name), app_versions(app_version), submitted_by(id), screenshot")
+        .eq("app_id", appId);
+    return ticketData
+}
+
+export async function getAppTickets(appName: string, appVersion: string) {
     const sb = await createClient();
     const {data: appId, error: appIdError} = await sb
         .from("apps")
         .select("id")
         .ilike("app_name", appName)
         .single();
+
+    console.log(`[appName]: ${appName}`);
+    console.log(`[appVersion]: ${appVersion}`);
+
+    const {data: appVersionId, error: appVersionIdError} = await sb
+        .from("app_versions")
+        .select("id, app_version, link")
+        .eq("id", appVersion)
+        .single();
+
+    console.log(`[appVersionId]: ${JSON.stringify(appVersionId)}`);
 
     const { data: tickets, error: ticketError } = await sb
         .from("tickets").select(`
@@ -106,8 +155,10 @@ export async function getAppTickets(appName: string) {
         app: app_id (app_name),
         app_version: app_version_id (app_version)
         `)
-        .eq("app_id", appId?.id);
-    return {data: tickets, error: ticketError}
+        .eq("app_id", appId?.id)
+        .eq("app_version_id", appVersion);
+
+    return {data: tickets, error: ticketError, versionLink: appVersionId?.link}
 } 
 
 export async function getAppData(appName: string) {
