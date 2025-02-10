@@ -1,6 +1,7 @@
 import TicketGroupForm from "@/components/ticket-group-form";
 import { AppTickets } from "@/components/app-tickets";
 import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/ui/tabs";
+import  HistoryData from "@/components/historyTable/history-table";
 
 export default function DashboardHeader({ appData }: any) {
     return ( 
@@ -23,9 +24,8 @@ export default function DashboardHeader({ appData }: any) {
                     </div>
                 </TabsContent>
                 <TabsContent value="history">
-                    <div>
-                        History Table
-                    </div>
+                <HistoryData />
+                   
                 </TabsContent>
             </Tabs>
         </div>
