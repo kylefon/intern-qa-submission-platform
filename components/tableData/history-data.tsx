@@ -3,6 +3,7 @@ import { DataTable } from "./data-table";
 import { columns } from "./columns";
 
 export default async function TableData({ app_id, role }) {
+    console.log(role);
     const supabase = await createClient();
 
     const { data: ticketData } = await supabase
@@ -23,15 +24,6 @@ export default async function TableData({ app_id, role }) {
         submitted_by: ticket.submitted_by,
         screenshot: ticket.screenshot
     })) || [];
-
-    console.log("FLATTENED DATA");
-    console.log(flattenedData); // Verify that created_at is a Date object
-    console.log("END FLATTENED DATA");
-
-
-    console.log("TICKET DATA");
-    console.log(ticketData);
-    console.log("END TICKET DATA");
 
     return (
         <div className="container mx-auto py-10">

@@ -43,10 +43,12 @@ import { getUserRole, validateUserSignIn } from "@/utils/actions"
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
+  role: any
 }
 
-export function DataTable<TData, TValue>({columns, data}: DataTableProps<TData, TValue>, role: any) {
+export function DataTable<TData, TValue>({columns, data, role}: DataTableProps<TData, TValue>) {
   console.log("Data table loaded.");
+  console.log(role);
   
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
@@ -109,7 +111,7 @@ export function DataTable<TData, TValue>({columns, data}: DataTableProps<TData, 
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <Dialog key={row.id} open={openDialog} onOpenChange={setOpenDialog}>
+                <Dialog key={row.id} open={selectedRow == row.original && openDialog} onOpenChange={setOpenDialog}>
                   <DialogTrigger asChild>
                     <TableRow
                       key={row.id}
