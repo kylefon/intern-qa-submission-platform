@@ -21,7 +21,7 @@ export default function TicketCard({ ticketData, role }) {
     const [userData, setUserData] = useState(null);
     const [userDataError, setUserDataError] = useState(null);
     const [isSubmitting, setIsSubmitting]=  useState(false);
-
+    
     useEffect(() => {
         const fetchUserData = async () => {
             try {
@@ -38,6 +38,7 @@ export default function TicketCard({ ticketData, role }) {
 
         fetchUserData();
     }, [ticketData.submitted_by.id]);
+
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
@@ -84,7 +85,7 @@ export default function TicketCard({ ticketData, role }) {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1 flex flex-col">
               <Label>Date:</Label>
-              {ticketData.created_at.split("T")[0]}
+              {ticketData.created_at.toString().split("T")[0]}
             </div>
             <div className="space-y-1 flex flex-col">
               <Label>Submitted By:</Label>

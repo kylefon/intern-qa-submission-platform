@@ -36,8 +36,8 @@ import { Input } from "../ui/input"
 import React from "react"
 import { useState } from "react"
 import TicketCard from "../ticket-card"
-import { Ticket } from "lucide-react"
 // import { Dialog, DialogTrigger } from "@radix-ui/react-dialog"
+import { getUserRole, validateUserSignIn } from "@/utils/actions"
 
 
 interface DataTableProps<TData, TValue> {
@@ -45,14 +45,16 @@ interface DataTableProps<TData, TValue> {
   data: TData[]
 }
 
-export function DataTable<TData, TValue>({
-  columns,
-  data,
-}: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({columns, data}: DataTableProps<TData, TValue>, role: any) {
+  console.log("Data table loaded.");
+  
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [selectedRow, setSelectedRow] = useState<TData | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
+  
+  console.log(selectedRow);
+
   const table = useReactTable({
     data,
     columns,
@@ -105,48 +107,53 @@ export function DataTable<TData, TValue>({
           </TableHeader>
           
           <TableBody>
-  {table.getRowModel().rows?.length ? (
-    table.getRowModel().rows.map((row) => (
-      <Dialog key={row.id} open={openDialog} onOpenChange={setOpenDialog}>
-        <DialogTrigger asChild>
-          <TableRow
-            key={row.id}
-            data-state={row.getIsSelected() && "selected"}
-            onClick={() => {
-              setSelectedRow(row.original); // ✅ Store clicked row data
-              setOpenDialog(true); // ✅ Open dialog
-            }}
-          >
-            {row.getVisibleCells().map((cell) => {
-              const columnMeta = cell.column.columnDef.meta || {};
-              return (
-                <TableCell
-                  key={cell.id}
-                  style={{
-                    minWidth: columnMeta.width || "auto", // Set width if defined
-                    width: columnMeta.width || "auto", // Apply dynamic width
-                  }}
-                >
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </TableCell>
-              );
-            })}
-          </TableRow>
-        </DialogTrigger>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <Dialog key={row.id} open={openDialog} onOpenChange={setOpenDialog}>
+                  <DialogTrigger asChild>
+                    <TableRow
+                      key={row.id}
+                      data-state={row.getIsSelected() && "selected"}
+                      onClick={() => {
+                        setSelectedRow(row.original); // ✅ Store clicked row data
+                        setOpenDialog(true); // ✅ Open dialog
+                      }}
+                    >
+                      {row.getVisibleCells().map((cell) => {
+                        const columnMeta = cell.column.columnDef.meta || {};
+                        return (
+                          <TableCell
+                            key={cell.id}
+                            style={{
+                              minWidth: columnMeta.width || "auto", // Set width if defined
+                              width: columnMeta.width || "auto", // Apply dynamic width
+                            }}
+                          >
+                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                  </DialogTrigger>
 
-        <DialogContent>
-          <TicketCard ticketData={selectedRow} role={role} />
-        </DialogContent>
-      </Dialog>
-    ))
-  ) : (
-    <TableRow>
-      <TableCell colSpan={columns.length} className="h-24 text-center">
-        No results.
-      </TableCell>
-    </TableRow>
-  )}
-</TableBody>
+                  <DialogTitle>
+                  </DialogTitle>
+
+                  <DialogContent>
+                    <div className="overflow-y-auto max-h-[80vh]">
+                      <TicketCard ticketData={selectedRow} role={role} />
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={columns.length} className="h-24 text-center">
+                  No results.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
 
         </Table>
       </div>
