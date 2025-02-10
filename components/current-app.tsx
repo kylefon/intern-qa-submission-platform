@@ -38,25 +38,29 @@ export function CurrentApp({ appName, initialData }) {
                             {currentVersionLink}
                             </a>
                         </h1>
-                        <Select onValueChange={setSelectedVersion}>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Select a version..." />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {appVersions?.length > 1 ? (
-                                    appVersions?.map((data) => (
-                                        <SelectItem
-                                            key={data.id}
-                                            value={data.id.toString()}
-                                        >
-                                            {data.app_version}
-                                        </SelectItem>
-                                    ))
-                                ) : (
-                                    <SelectItem value="N/A">No Versions Found...</SelectItem>
-                                )}
-                            </SelectContent>
-                        </Select>
+
+                        <div className="w-[250px]">
+                            <Select onValueChange={setSelectedVersion}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select a version..." />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {appVersions?.length > 1 ? (
+                                        appVersions?.map((data) => (
+                                            <SelectItem
+                                                key={data.id}
+                                                value={data.id.toString()}
+                                            >
+                                                {data.app_version}
+                                            </SelectItem>
+                                        ))
+                                    ) : (
+                                        <SelectItem value="N/A">No Versions Found...</SelectItem>
+                                    )}
+                                </SelectContent>
+                            </Select>
+                        </div>
+
                     </div>
                     <div className="flex gap-2">
                         {role === "admin" && <TicketGroupForm initialData={appData} />}
