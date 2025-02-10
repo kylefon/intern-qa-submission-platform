@@ -1,21 +1,22 @@
+"use client";
+
 import { ColumnDef } from "@tanstack/react-table";
 import { format, parseISO } from "date-fns";
 import { ArrowUpDown } from "lucide-react";
 import { Button } from "../ui/button";
+import { useMemo } from "react";
 
 
-export type TableData = {
-  created_at: string | Date;
-  ticket_title: string;
-  description: string;
+export type HistoryData = {
+  created_at: string;
   status: string;
-  type_of_fix: string;
   app_name: string;
   app_version: string;
+  ticket_title: string;
   updated_by: string;
 };
 
-export const columns: ColumnDef<TableData>[] = [
+export const columns: ColumnDef<HistoryData>[] = [
   {
     accessorKey: "created_at",
     header: "Date",
@@ -39,25 +40,28 @@ export const columns: ColumnDef<TableData>[] = [
     meta: { width: 200 }
   },
   {
-    accessorKey: "ticket_title",
-    header: "Ticket Title",
-    meta: { width: 120 }
-  },
-  {
-    accessorKey: "description",
-    header: "Description",
-    meta: { width: 150 }
-  },
-  {
     accessorKey: "status",
     header: "Status",
     meta: { width: 100 }
   },
+
   {
-    accessorKey: "type_of_fix",
-    header: "Type of Fix",
-    meta: { width: 110 }
+    accessorKey: "app_name",
+    header: "Application",
+    meta: { width: 120 }
   },
+  {
+    accessorKey: "app_version",
+    header: "App Version",
+    meta: { width: 100 }
+  },
+
+  {
+    accessorKey: "ticket_title",
+    header: "Ticket Title",
+    meta: { width: 100 }
+  },
+
   {
     accessorKey: "updated_by",
     header: ({ column }) => (
