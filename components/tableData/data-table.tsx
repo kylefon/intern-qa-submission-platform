@@ -15,6 +15,7 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
@@ -32,6 +33,7 @@ import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 import { useState } from "react"
 import TicketCard from "../ticket-card"
+import { DialogDescription } from "@radix-ui/react-dialog"
 
 
 interface DataTableProps<TData, TValue> {
@@ -127,14 +129,12 @@ export function DataTable<TData, TValue>({columns, data, role, selectedVersion}:
                       })}
                     </TableRow>
                   </DialogTrigger>
-
-                  <DialogTitle>
-                  </DialogTitle>
-
-                  <DialogContent>
-                    <div className="overflow-y-auto max-h-[80vh]">
-                      <TicketCard ticketData={selectedRow} role={role} />
-                    </div>
+                  <DialogContent className="overflow-y-auto max-h-[80vh]">
+                    <DialogHeader>
+                      <DialogTitle>{selectedRow?.ticket_title}</DialogTitle>
+                      <DialogDescription>{selectedRow?.description}</DialogDescription>
+                    </DialogHeader>
+                        <TicketCard ticketData={selectedRow} role={role} />
                   </DialogContent>
                 </Dialog>
               ))
@@ -146,7 +146,6 @@ export function DataTable<TData, TValue>({columns, data, role, selectedVersion}:
               </TableRow>
             )}
           </TableBody>
-
         </Table>
       </div>
 

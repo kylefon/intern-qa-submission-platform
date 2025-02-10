@@ -7,7 +7,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "./ui/form";
-import { addTicketUpdate, getUserDataById, updateTicketCard } from "@/utils/actions";
+import { addTicketUpdate, getIdFromAuthId, getUserDataById, updateTicketCard } from "@/utils/actions";
 import { useEffect, useState } from "react";
 import { Loader } from "lucide-react";
 import { Label } from "./ui/label";
@@ -21,6 +21,13 @@ export default function TicketCard({ ticketData, role }) {
     const [userData, setUserData] = useState(null);
     const [userDataError, setUserDataError] = useState(null);
     const [isSubmitting, setIsSubmitting]=  useState(false);
+    const [ userId, setUserId ] = useState(null); 
+
+    console.log("Ticket Data", ticketData);
+    console.log("user data ", userData);
+
+    console.log("ticket data user", ticketData.submitted_by.id);
+    console.log("user data", userId);
     
     useEffect(() => {
         const fetchUserData = async () => {
@@ -30,6 +37,13 @@ export default function TicketCard({ ticketData, role }) {
                     setUserData(data);
                 } else {
                     setUserDataError(error);
+                }
+
+                const { data: userIdData, error: userIDError } = await getIdFromAuthId();
+                if ( userIdData ) {
+                  setUserId(userIdData);
+                } else {
+                  setUserData(userIDError);
                 }
             } catch (error) {
                 setUserDataError(error);
@@ -169,9 +183,16 @@ export default function TicketCard({ ticketData, role }) {
                   </div>
                 </div>
               )}
-              <Button type="submit" disabled={isSubmitting} className="flex-shrink-0 mt-2">
+              { ticketData.submitted_by.id === userId && (
+                <Button type="button">
+                  Edit
+                </Button>
+              )}
+              { role === "admin" && (
+                <Button type="submit" disabled={isSubmitting} className="flex-shrink-0 mt-2">
                   {isSubmitting ? <Loader size={16} /> : "Submit"}
-              </Button>
+                </Button>
+              )}
             </form>
           </Form>   
         </div>

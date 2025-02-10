@@ -20,7 +20,7 @@ export function CurrentApp({ appName, initialData }) {
     useEffect(() => {
         const fetchCurrentVersionLink = async () => {
             const versionLink = await getVersionLink(selectedVersion);
-            setCurrentVersionLink(versionLink.link);
+            setCurrentVersionLink(versionLink?.link);
         }
         fetchCurrentVersionLink();
     }, [selectedVersion])
