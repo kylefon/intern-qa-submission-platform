@@ -5,7 +5,7 @@ import { deslugify } from "@/utils/slugify";
 import { redirect } from "next/navigation";
 import { InternTicketForm } from "@/components/intern-ticket-form";
 import { Separator } from "@/components/ui/separator";
-import TableData from "@/components/tableData/history-data";
+import TableData from "@/components/tableData/table-data";
 import {
     Select,
     SelectContent,
@@ -75,24 +75,6 @@ export default async function TicketGroupPage({ params }: { params: Promise<{ ap
             </div>
             <Separator />
                 <TableData app_id={appData[0].id} />
-
-            {ticketData?.map((ticket) => (
-                <Dialog key={ticket.id}>
-                    <DialogTrigger asChild>
-                        {/* Testing button only should be the button from table*/}
-                        <Button>TEST TICKET CARD</Button>
-                    </DialogTrigger>
-                    <DialogContent className="overflow-y-auto max-h-[80vh]">
-                        <DialogHeader>
-                            <DialogTitle>{ticket.ticket_title}</DialogTitle>
-                            <DialogDescription>
-                                {ticket.description}
-                            </DialogDescription>
-                        </DialogHeader>
-                        <TicketCard ticketData={ticket} role={role}/>
-                    </DialogContent>
-                </Dialog>
-            ))}
         </div>
     )
 }
