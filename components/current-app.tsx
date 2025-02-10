@@ -15,19 +15,17 @@ import { Separator } from "./ui/separator";
 import { getVersionLink } from "@/utils/actions";
 
 export function CurrentApp({ appName, initialData }) {
-    const [selectedVersion, setSelectedVersion] = useState(null);
-    const [currentVersionLink, setCurrentVersionLink] = useState(null);
-
+    const [selectedVersion, setSelectedVersion] = useState("");
+    const [currentVersionLink, setCurrentVersionLink] = useState("");
     useEffect(() => {
         const fetchCurrentVersionLink = async () => {
-            const { data: versionLink, error } = await getVersionLink(selectedVersion);
-            setCurrentVersionLink(versionLink);
+            const versionLink = await getVersionLink(selectedVersion);
+            setCurrentVersionLink(versionLink.link);
         }
         fetchCurrentVersionLink();
+    }, [selectedVersion])
 
-    }, [currentVersionLink])
-
-    const { user, role, appData, appVersions, ticketData } = initialData;
+    const { user, role, appData, appVersions } = initialData;
     
     return (
         <div>
@@ -35,7 +33,11 @@ export function CurrentApp({ appName, initialData }) {
                 <h1 className="text-4xl font-extrabold">{appData?.[0]?.app_name}</h1>
                 <div className="flex flex-col gap-2 justify-between w-full sm:flex-row sm:items-end">
                     <div className="w-full sm:w-[40%]">
-                        <h1>Place link here: {currentVersionLink}</h1>
+                        <h1>{"Link: "}
+                            <a href={currentVersionLink} target="_blank" className="text-blue-500 underline">
+                            {currentVersionLink}
+                            </a>
+                        </h1>
                         <Select onValueChange={setSelectedVersion}>
                             <SelectTrigger>
                                 <SelectValue placeholder="Select a version..." />
@@ -62,7 +64,7 @@ export function CurrentApp({ appName, initialData }) {
                     </div>
                 </div>
             </div>
-            <Separator />
+            <Separator className="my-5"/>
             <TableData appName={appName} role={role} selectedVersion={selectedVersion}/>
         </div>
     );

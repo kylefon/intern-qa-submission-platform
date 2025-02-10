@@ -2,22 +2,20 @@
 import { createClient } from "@/utils/supabase/server";
 import { randomUUID } from "crypto";
 
-export async function getVersionLink(version) {
+export async function getVersionLink(version: string) {
     const supabase = await createClient();
     const { data: versionLink, error } = await supabase
         .from('app_versions')
         .select("link")
         .eq("id", version)
         .single();
-    console.log(versionLink);
     return versionLink;
 }
 
-export async function fetchAppData(appName) {
+export async function fetchAppData(appName: string) {
     const { user, userError } = await validateUserSignIn();
     const getUserRoleResult = await getUserRole(user?.email);
     const { userRole, userRoleError } = getUserRoleResult;
-    const { data: ticketData, error: ticketError } = await getAppTickets(appName);
     const { data: appData, error: appError } = await getAppData(appName);
     const { data: appVersions, error: appVersionsError } = await getAppVersions(appData?.[0]?.id);
 
@@ -25,8 +23,7 @@ export async function fetchAppData(appName) {
         user,
         role: userRole,
         appData,
-        appVersions,
-        ticketData
+        appVersions
     };
 }
 
@@ -119,7 +116,7 @@ export async function getAppTicketsUsingId(appId: string) {
         .select(
             "ticket_title, created_at, status, type_of_fix, description, apps(app_name), app_versions(app_version), submitted_by(id), screenshot")
         .eq("app_id", appId);
-    return ticketData
+    return ticketData;
 }
 
 export async function getAppTickets(appName: string, appVersion: string) {

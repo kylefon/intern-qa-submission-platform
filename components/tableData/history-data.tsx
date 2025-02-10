@@ -7,11 +7,9 @@ import { getAppTickets } from "@/utils/actions";
 
 export default function TableData({ appName, role, selectedVersion }) {
     const [ticketData, setTicketData] = useState([]);
-    const [versionLink, setVersionLink] = useState("");
     useEffect(() => {
         const fetchTickets = async () => {
             const {data: tickets, error: ticketsError, versionLink: versionLink} = await getAppTickets(appName, selectedVersion);
-            setVersionLink(versionLink);
             setTicketData(tickets);
         }
         fetchTickets();

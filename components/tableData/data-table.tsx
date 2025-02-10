@@ -63,9 +63,9 @@ export function DataTable<TData, TValue>({columns, data, role, selectedVersion}:
   })
 
   return (
-    <>
+    <div className="space-y-5">
       <div>
-        <div className="flex items-center py-4">
+        <div className="flex items-center py-0">
           <Input
             placeholder="Filter status..."
             value={(table.getColumn("status")?.getFilterValue() as string) ?? ""}
@@ -169,6 +169,6 @@ export function DataTable<TData, TValue>({columns, data, role, selectedVersion}:
           Next
         </Button>
       </div>
-    </>
+    </div>
   );
 }
