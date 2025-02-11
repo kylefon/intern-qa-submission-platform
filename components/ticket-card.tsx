@@ -67,7 +67,7 @@ export default function TicketCard({ ticketData, role }) {
       setIsSubmitting(true);
       try {
           const { error: ticketError } = await updateTicketCard(data.status, data.remarks, ticketData.id);
-          
+          console.log(ticketData.id); 
           if (ticketError) {
             console.error("Error updating ticket: ", ticketError)
           }
@@ -84,7 +84,6 @@ export default function TicketCard({ ticketData, role }) {
       }
     }
   
-
     if (userDataError) {
         return <div>Error fetching user data: {userDataError}</div>;
     }

@@ -35,7 +35,7 @@ export async function addNewVersion(appName: string, newVersion: string, newVers
     if (insertedVersionError) {
         return {data: null, error: insertedVersionError}
     }
-    
+
     console.log(appId, appIdError, insertedVersion, insertedVersionError);
     return {data: insertedVersion, error: null}
 }
@@ -224,6 +224,11 @@ export async function getUserDataById(userId: string) {
 
 export async function updateTicketCard(status: string, remarks: string, id: string) {
     const supabase = await createClient();
+    
+    console.log("[status]: ", status);
+    console.log("[remarks]: ", remarks);
+    console.log("[id]: ", id);
+
 
     const { data: appUpdate, error: appError } = await supabase
         .from("tickets")

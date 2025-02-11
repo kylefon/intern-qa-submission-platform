@@ -17,6 +17,7 @@ export default function TableData({ appName, role, selectedVersion, isLoading })
     }, [selectedVersion]);
 
     const flattenedData = ticketData?.map((ticket) => ({
+        id: ticket.id,
         ticket_title: ticket.ticket_title,
         app_name: ticket.apps?.app_name || "N/A",
         app_version: ticket.app_versions?.app_version || "N/A",
