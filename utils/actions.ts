@@ -18,10 +18,9 @@ export async function fetchAppData(appName: string) {
     const { userRole, userRoleError } = getUserRoleResult;
     const { data: appData, error: appError } = await getAppData(appName);
     const { data: appVersions, error: appVersionsError } = await getAppVersions(appData?.[0]?.id);
-
     return {
         user,
-        role: userRole,
+        role: userRole?.role,
         appData,
         appVersions
     };

@@ -22,10 +22,9 @@ export default function TicketCard({ ticketData, role }) {
     const [userDataError, setUserDataError] = useState(null);
     const [isSubmitting, setIsSubmitting]=  useState(false);
     const [ userId, setUserId ] = useState(null); 
-
+    
     console.log("Ticket Data", ticketData);
     console.log("user data ", userData);
-
     console.log("ticket data user", ticketData.submitted_by.id);
     console.log("user data", userId);
     

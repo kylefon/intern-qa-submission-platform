@@ -26,7 +26,7 @@ export function CurrentApp({ appName, initialData }) {
     }, [selectedVersion])
 
     const { user, role, appData, appVersions } = initialData;
-    
+    console.log(`[current-app: role]: ${role}`) 
     return (
         <div>
             <div className="flex flex-col w-full space-y-2 items-start">
