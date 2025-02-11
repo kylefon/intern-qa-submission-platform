@@ -57,7 +57,7 @@ export function CurrentApp({ appName, initialData }) {
                                     <SelectValue placeholder="Select a version..." />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    {appVersions?.length > 1 ? (
+                                    {appVersions?.length >= 1 ? (
                                         appVersions?.map((data) => (
                                             <SelectItem
                                                 key={data.id}

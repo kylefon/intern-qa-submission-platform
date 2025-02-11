@@ -31,9 +31,11 @@ export async function addNewVersion(appName: string, newVersion: string, newVers
             link: newVersionLink
         }])
         .select();
+
     if (insertedVersionError) {
         return {data: null, error: insertedVersionError}
     }
+    
     console.log(appId, appIdError, insertedVersion, insertedVersionError);
     return {data: insertedVersion, error: null}
 }
