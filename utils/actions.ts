@@ -12,6 +12,32 @@ export async function getVersionLink(version: string) {
     return versionLink;
 }
 
+export async function addNewVersion(appName: string, newVersion: string, newVersionLink: string) {
+    const sb = await createClient();
+    // Need: app_id, app_version, link, 
+    const {data: appId, appIdError} = await sb
+        .from("apps")
+        .select("id")
+        .ilike("app_name", appName)
+        .single();
+
+    console.log(appId?.id, newVersion, newVersionLink);
+
+    const {insertedVersion, insertedVersionError} = await sb
+        .from("app_versions")
+        .insert([{
+            app_id: appId?.id,
+            app_version: newVersion,
+            link: newVersionLink
+        }])
+        .select();
+    if (insertedVersionError) {
+        return {data: null, error: insertedVersionError}
+    }
+    console.log(appId, appIdError, insertedVersion, insertedVersionError);
+    return {data: insertedVersion, error: null}
+}
+
 export async function fetchAppData(appName: string) {
     const { user, userError } = await validateUserSignIn();
     const getUserRoleResult = await getUserRole(user?.email);
@@ -30,8 +56,10 @@ export async function addTicketToServer(submittedForm: FormData, appName: string
     const { user, userError } = await validateUserSignIn();
     const supabase = await createClient();
 
+    console.log(appName, appVersion);
+
     // Translate auth ID to users table ID.
-    const { data: translatedId, error } = await supabase
+    const { data: translatedId, translatedIdError } = await supabase
         .from('users')
         .select('id')
         .eq("auth_id", user?.id);
@@ -40,16 +68,22 @@ export async function addTicketToServer(submittedForm: FormData, appName: string
     const { data: translatedAppName, translatedAppNameError } = await supabase
         .from('apps')
         .select('id')
-        .ilike("app_name", appName);
+        .ilike("app_name", appName)
+        .single();
+
+    console.log(translatedAppName, translatedAppNameError);
 
     // Translate app version to app version ID
     const { data: translatedAppVersion, translatedAppVersionError } = await supabase
         .from('app_versions')
         .select('id')
-        .eq("app_id", translatedAppName?.[0]?.id)
-        .eq("app_version", appVersion);
+        .eq("app_id", translatedAppName?.id)
+        .eq("id", appVersion)
+        .single();
 
-    // Upload screenshot to image bucket.
+    console.log(translatedAppVersion, translatedAppVersionError);
+
+        // Upload screenshot to image bucket.
     const uuid = randomUUID(); // Use this uuid for the ticket for easier image tracking.
     const imageFile = submittedForm.get("screenshot");
     const fileExtension = imageFile?.type.toString().split('/').pop();
@@ -76,13 +110,14 @@ export async function addTicketToServer(submittedForm: FormData, appName: string
                 screenshot: imageLink?.publicUrl.toString(),
                 status: "NEW",
                 // Other metadata.
-                app_id: translatedAppName?.[0]?.id.toString(),
-                app_version_id: translatedAppVersion?.[0]?.id.toString(),
+                app_id: translatedAppName?.id.toString(),
+                app_version_id: translatedAppVersion?.id.toString(),
                 submitted_by: translatedId?.[0]?.id.toString(),
                 updated_at: new Date().toISOString()
             }
         ])
         .select();
+    console.log(insertedData, insertedDataError);
 }
 
 export async function validateUserSignIn() {

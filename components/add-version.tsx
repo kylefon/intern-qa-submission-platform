@@ -31,7 +31,6 @@ const formSchema = z.object({
     new_version_link: z.string(),
 });
 
-
 export function AddVersion({ appName }) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -58,7 +57,7 @@ export function AddVersion({ appName }) {
     return (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-                <PlusCircleIcon onClick={() => setIsDialogOpen(true)}></PlusCircleIcon>
+                <Button variant="outline" onClick={() => setIsDialogOpen(true)}>Add new version</Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>

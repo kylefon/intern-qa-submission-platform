@@ -13,6 +13,7 @@ import TicketGroupForm from "@/components/ticket-group-form";
 import TableData from "@/components/tableData/history-data";
 import { Separator } from "./ui/separator";
 import { getVersionLink } from "@/utils/actions";
+import { AddVersion } from "@/components/add-version";
 
 export function CurrentApp({ appName, initialData }) {
     const [selectedVersion, setSelectedVersion] = useState("");
@@ -63,6 +64,9 @@ export function CurrentApp({ appName, initialData }) {
 
                     </div>
                     <div className="flex gap-2">
+                        {role === "admin" && (
+                            <AddVersion appName={appName} />
+                        )}
                         {role === "admin" && <TicketGroupForm initialData={appData} />}
                         <InternTicketForm appVersion={selectedVersion} appName={appName} />
                     </div>
