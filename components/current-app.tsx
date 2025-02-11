@@ -18,10 +18,21 @@ import { AddVersion } from "@/components/add-version";
 export function CurrentApp({ appName, initialData }) {
     const [selectedVersion, setSelectedVersion] = useState("");
     const [currentVersionLink, setCurrentVersionLink] = useState("");
+
+    const [isTableLoading, setIsTableLoading] = useState(true);
+
     useEffect(() => {
         const fetchCurrentVersionLink = async () => {
-            const versionLink = await getVersionLink(selectedVersion);
-            setCurrentVersionLink(versionLink?.link);
+            setIsTableLoading(true);
+            try {
+                const versionLink = await getVersionLink(selectedVersion);
+                setCurrentVersionLink(versionLink?.link);
+                
+            } catch (error) {
+                console.log(error);    
+            } finally {
+                setIsTableLoading(false);
+            }
         }
         fetchCurrentVersionLink();
     }, [selectedVersion])
@@ -73,7 +84,8 @@ export function CurrentApp({ appName, initialData }) {
                 </div>
             </div>
             <Separator className="my-5"/>
-            <TableData appName={appName} role={role} selectedVersion={selectedVersion}/>
+            <TableData isLoading={isTableLoading} appName={appName} role={role} selectedVersion={selectedVersion}/>
+            
         </div>
     );
 }

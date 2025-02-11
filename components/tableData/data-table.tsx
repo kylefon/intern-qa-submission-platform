@@ -40,10 +40,10 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
   role: any
-  selectedVersion: string
+  isLoading: boolean
 }
 
-export function DataTable<TData, TValue>({columns, data, role, selectedVersion}: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({columns, data, role}: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [selectedRow, setSelectedRow] = useState<TData | null>(null);
@@ -101,7 +101,8 @@ export function DataTable<TData, TValue>({columns, data, role, selectedVersion}:
           </TableHeader>
           
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {
+            ( (table.getRowModel().rows?.length)) ? (
               table.getRowModel().rows.map((row) => (
                 <Dialog key={row.id} open={selectedRow == row.original && openDialog} onOpenChange={setOpenDialog}>
                   <DialogTrigger asChild>

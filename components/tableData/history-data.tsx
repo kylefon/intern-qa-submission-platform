@@ -3,9 +3,10 @@ import { DataTable } from "./data-table";
 import { columns } from "./columns";
 import { useEffect, useState } from "react";
 import { getAppTickets } from "@/utils/actions";
+import { Loader2, Loader2Icon } from "lucide-react";
 
 
-export default function TableData({ appName, role, selectedVersion }) {
+export default function TableData({ appName, role, selectedVersion, isLoading }) {
     const [ticketData, setTicketData] = useState([]);
     useEffect(() => {
         const fetchTickets = async () => {
@@ -31,7 +32,14 @@ export default function TableData({ appName, role, selectedVersion }) {
 
     return (
         <div className="container px-0 py-0">
-            <DataTable columns={columns} data={flattenedData} role={role}/>
+            {isLoading ? (
+                <div className="flex w-full items-center justify-center">
+                    <Loader2 className="animate-spin"/>
+                    <h2>Loading tickets...</h2>
+                </div>
+            ) : (
+                <DataTable columns={columns} data={flattenedData} role={role}/>
+            )}
         </div>
     );
 }
