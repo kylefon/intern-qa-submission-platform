@@ -10,6 +10,7 @@ import { Button } from "./ui/button";
 import { Dialog, DialogFooter, DialogHeader, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger} from "./ui/dialog";
 import { useForm } from "react-hook-form";
 import { addTicketGroup, editTicketGroup } from "@/utils/actions";
+import { Pencil } from "lucide-react";
 
 const FormSchema = z.object({
     app_name: z.string(),
@@ -69,8 +70,8 @@ export default function TicketGroupForm({ initialData }: TicketGroupProps) {
             <Dialog>
                 <DialogTrigger asChild>
                     { isEditing ? (
-                        <Button variant="outline">
-                            Edit Ticket Group
+                        <Button variant={"outline"}>
+                            <Pencil /> Edit
                         </Button>
                     ) : (
                         <Button className="w-full md:w-auto bg-green-500">

@@ -61,37 +61,17 @@ export function CurrentApp({ appName, initialData }) {
     console.log(`[current-app: role]: ${role}`) 
     return (
         <div>
-            <div className="flex flex-col w-full space-y-2 items-start">
-                <div className="w-full flex justify-between items-center">
-                    <h1 className="text-4xl font-extrabold">{appData?.[0]?.app_name}</h1>
-                    <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                            <Button variant={"destructive"}>
-                                <Trash/>
-                            </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                            <AlertDialogHeader>
-                                <AlertDialogTitle>
-                                    Delete Group
-                                </AlertDialogTitle>
-                                <AlertDialogDescription>Are you sure you want to delete this group?</AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>  
-                                <AlertDialogAction onClick={() => deleteEvent(initialData?.appData?.[0]?.id)}>Delete</AlertDialogAction>
-                            </AlertDialogFooter>
-                        </AlertDialogContent>
-                    </AlertDialog>
-                </div>
-                <div className="flex flex-col gap-2 justify-between w-full sm:flex-row sm:items-end">
-                    <div className="w-full sm:w-[40%]">
+            <div className="flex flex-col w-full space-y-4 items-start">
+                <div className="w-full flex justify-between items-center space-">
+                    <div className="flex gap-2 items-center">
+                        <h1 className="text-4xl font-extrabold">{appData?.[0]?.app_name}</h1>
                         <h1>{"Link: "}
                             <a href={currentVersionLink} target="_blank" className="text-blue-500 underline">
                             {currentVersionLink}
                             </a>
                         </h1>
-
+                    </div>
+                    <div className="flex gap-2 items-center">
                         <div className="w-[250px]">
                             <Select onValueChange={setSelectedVersion}>
                                 <SelectTrigger>
@@ -113,16 +93,43 @@ export function CurrentApp({ appName, initialData }) {
                                 </SelectContent>
                             </Select>
                         </div>
-
-                    </div>
-                    <div className="flex gap-2">
-                        {role === "admin" && (
-                            <AddVersion appName={appName} />
-                        )}
-                        {role === "admin" && <TicketGroupForm initialData={appData} />}
-                            <InternTicketForm appVersion={selectedVersion} appName={appName} />
+                        <div className="flex gap-2">
+                            {role === "admin" && (
+                                <AddVersion appName={appName} />
+                            )}
+                        </div>
                     </div>
                 </div>
+                <div className="flex flex-col gap-2 justify-between w-full sm:flex-row sm:items-end">
+                    <div className="w-full flex justify-between">
+                    {role === "admin" && 
+                        <div className="flex gap-4">
+                            <TicketGroupForm initialData={appData} />
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <Button variant={"destructive"}>
+                                        <Trash/> Delete
+                                    </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>
+                                            Delete Group
+                                        </AlertDialogTitle>
+                                        <AlertDialogDescription>Are you sure you want to delete this group?</AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>  
+                                        <AlertDialogAction onClick={() => deleteEvent(initialData?.appData?.[0]?.id)}>Delete</AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                        </div>
+                    }
+                    <InternTicketForm appVersion={selectedVersion} appName={appName} />
+                    </div>
+                </div>
+
             </div>
             <Separator className="my-5"/>
             <TableData isLoading={isTableLoading} appName={appName} role={role} selectedVersion={selectedVersion}/>
