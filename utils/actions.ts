@@ -345,3 +345,51 @@ export async function editTicketGroup(data, id) {
     
     return { appGroupData, appGroupError };
 }
+
+
+export async function editTicketCard(data, id) {
+    const supabase = await createClient();
+
+    console.log("Trying to change it to ", data);
+    console.log("id edit = ", id)
+
+    const uuid = crypto.randomUUID();
+    const fileExtension = data.screenshot.type.toString().split("/").pop();
+    const fileName = uuid + '.' + fileExtension;
+
+    const { data: uploadData, error: uploadError } = await supabase
+        .storage
+        .from("ticket_images")
+        .upload(fileName.toString(), data.screenshot);
+
+    if (uploadError) {
+        console.log("Error uploading image: ", uploadError);
+        return { appTicketError: uploadError };
+    }
+
+    const { data: imageLink } = await supabase
+        .storage
+        .from("ticket_images")
+        .getPublicUrl(fileName);
+
+    const { data: appTicketData , error: appTicketError } = await supabase
+        .from("tickets")   
+        .update({
+            ticket_title: data.ticketTitle,
+            type_of_fix: data.type,
+            description: data.description,
+            screenshot: imageLink?.publicUrl.toString(),
+        })
+        .eq("id", id)
+        .select()
+
+        if (appTicketData) {
+            console.log("SUCCESSFULLY EDITED TICKET", appTicketData);
+        }
+
+        if (appTicketError) {
+            console.log("Error editing group ", appTicketError);
+        }
+    
+    return { appTicketData, appTicketError };
+}

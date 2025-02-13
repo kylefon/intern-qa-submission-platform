@@ -79,7 +79,7 @@ export function CurrentApp({ appName, initialData }) {
                             <AddVersion appName={appName} />
                         )}
                         {role === "admin" && <TicketGroupForm initialData={appData} />}
-                        <InternTicketForm appVersion={selectedVersion} appName={appName} />
+                            <InternTicketForm appVersion={selectedVersion} appName={appName} />
                     </div>
                 </div>
             </div>

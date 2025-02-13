@@ -11,6 +11,8 @@ import { addTicketUpdate, getIdFromAuthId, getUserDataById, updateTicketCard } f
 import { useEffect, useState } from "react";
 import { Loader } from "lucide-react";
 import { Label } from "./ui/label";
+import { InternTicketForm } from "./intern-ticket-form";
+import { deslugify } from "@/utils/slugify";
 
 const FormSchema = z.object({
     status: z.string(),
@@ -181,10 +183,8 @@ export default function TicketCard({ ticketData, role }) {
                   </div>
                 </div>
               )}
-              { ticketData.submitted_by.id === userId && (
-                <Button type="button">
-                  Edit
-                </Button>
+              { ticketData.submitted_by.id === userId?.[0].id && (
+                <InternTicketForm initialData={ticketData}/>
               )}
               { role === "admin" && (
                 <Button type="submit" disabled={isSubmitting} className="flex-shrink-0 mt-2">
