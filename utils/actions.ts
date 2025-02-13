@@ -350,9 +350,6 @@ export async function editTicketGroup(data, id) {
 export async function editTicketCard(data, id) {
     const supabase = await createClient();
 
-    console.log("Trying to change it to ", data);
-    console.log("id edit = ", id)
-
     const uuid = crypto.randomUUID();
     const fileExtension = data.screenshot.type.toString().split("/").pop();
     const fileName = uuid + '.' + fileExtension;
@@ -392,4 +389,27 @@ export async function editTicketCard(data, id) {
         }
     
     return { appTicketData, appTicketError };
+}
+
+
+export async function deleteTicketGroup(id) {
+    const supabase = await createClient();
+
+    try {    
+        const { data, error } = await supabase
+            .from("apps")
+            .delete()
+            .eq('id', id)
+            .select();
+
+        if ( error ) {
+            console.log("Failed to delete group:", error);
+            return { data: null, error};
+        }
+        console.log("Successfully Deleted group: ", data );
+        return { data, error };
+    } catch (error) {
+        console.error("Error in deleting group: ", error);
+        return { data: null, error};
+    }
 }

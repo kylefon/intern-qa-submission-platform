@@ -30,7 +30,6 @@ interface TicketGroupProps {
 
 export default function TicketGroupForm({ initialData }: TicketGroupProps) {   
     const isEditing = !!initialData;
-    console.log("INITIAL DATA", initialData);
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),

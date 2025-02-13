@@ -18,6 +18,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogDescription
 } from "@/components/ui/dialog"
 
 import {
@@ -33,7 +34,6 @@ import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 import { useState } from "react"
 import TicketCard from "../ticket-card"
-import { DialogDescription } from "@radix-ui/react-dialog"
 
 
 interface DataTableProps<TData, TValue> {

@@ -55,8 +55,6 @@ const formSchema = z.object({
 });
 
 export function InternTicketForm({ appName, appVersion, initialData }) {
-
-    console.log("INITIAL DATA ", initialData)
     const isEditing = !!initialData;
 
     const [selectedImage, setSelectedImage] = useState(null);

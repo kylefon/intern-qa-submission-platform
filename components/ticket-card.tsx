@@ -164,10 +164,12 @@ export default function TicketCard({ ticketData, role }) {
                     <Label>Status:</Label>
                     {ticketData.status}
                   </div>
-                  <div className="space-y-1 flex flex-col">
-                    <Label>Remarks:</Label>
-                    <div>{ticketData.remarks}</div>
-                  </div>
+                  { ticketData.remarks && (  
+                    <div className="space-y-1 flex flex-col">
+                      <Label>Remarks:</Label>
+                      <div>{ticketData.remarks}</div>
+                    </div>
+                  )}
                 </div>
               )}
       

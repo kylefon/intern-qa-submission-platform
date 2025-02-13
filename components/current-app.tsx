@@ -12,8 +12,12 @@ import { InternTicketForm } from "@/components/intern-ticket-form";
 import TicketGroupForm from "@/components/ticket-group-form";
 import TableData from "@/components/tableData/history-data";
 import { Separator } from "./ui/separator";
-import { getVersionLink } from "@/utils/actions";
+import { deleteTicketGroup, getVersionLink } from "@/utils/actions";
 import { AddVersion } from "@/components/add-version";
+import { Trash } from "lucide-react";
+import { Button } from "./ui/button";
+import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger, AlertDialogAction, AlertDialogCancel } from "./ui/alert-dialog";
+import { redirect } from "next/navigation";
 
 export function CurrentApp({ appName, initialData }) {
     const [selectedVersion, setSelectedVersion] = useState("");
@@ -21,13 +25,27 @@ export function CurrentApp({ appName, initialData }) {
 
     const [isTableLoading, setIsTableLoading] = useState(true);
 
+
+    const deleteEvent = async ( id: number ) => {
+        const { data, error } = await deleteTicketGroup(id);
+
+        if ( data ) {
+            console.log("DELETED THE APP");
+            return redirect("/dashboard")
+        }
+
+        if ( error ) {
+            console.log("error deleting the app ", error);
+            return;
+        }
+    }
+    
     useEffect(() => {
         const fetchCurrentVersionLink = async () => {
             setIsTableLoading(true);
             try {
                 const versionLink = await getVersionLink(selectedVersion);
                 setCurrentVersionLink(versionLink?.link);
-                
             } catch (error) {
                 console.log(error);    
             } finally {
@@ -38,11 +56,34 @@ export function CurrentApp({ appName, initialData }) {
     }, [selectedVersion])
 
     const { user, role, appData, appVersions } = initialData;
+    console.log("INITIAL DATA", initialData);
+    console.log("ID OF THE TICKET GROUP: ", initialData?.appData?.[0]?.id)
     console.log(`[current-app: role]: ${role}`) 
     return (
         <div>
             <div className="flex flex-col w-full space-y-2 items-start">
-                <h1 className="text-4xl font-extrabold">{appData?.[0]?.app_name}</h1>
+                <div className="w-full flex justify-between items-center">
+                    <h1 className="text-4xl font-extrabold">{appData?.[0]?.app_name}</h1>
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <Button variant={"destructive"}>
+                                <Trash/>
+                            </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>
+                                    Delete Group
+                                </AlertDialogTitle>
+                                <AlertDialogDescription>Are you sure you want to delete this group?</AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>  
+                                <AlertDialogAction onClick={() => deleteEvent(initialData?.appData?.[0]?.id)}>Delete</AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+                </div>
                 <div className="flex flex-col gap-2 justify-between w-full sm:flex-row sm:items-end">
                     <div className="w-full sm:w-[40%]">
                         <h1>{"Link: "}
