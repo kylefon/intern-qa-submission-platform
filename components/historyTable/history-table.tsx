@@ -1,35 +1,35 @@
-import { createClient } from "@/utils/supabase/server";
+"use client";
+
+import { createClient } from "@/utils/supabase/client";
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
+import { getHistoryData } from "@/utils/actions";
+import { useEffect, useState } from "react";
 
-export default async function HistoryData({}) {
-    const supabase = await createClient();
+export default function HistoryData({}) {
+    const [ data, setData ] = useState([]);
+    const [ loading, setLoading ] = useState(true);
 
-    const { data: historyData, error: historyDataError } = await supabase
-    // const { data: ret, error } = await supabase
-    .from("ticket_updates")
-    .select('*, tickets(ticket_title, apps(app_name), app_versions(app_version)), users(email)');
-    //     "id, created_at, status, updated_by, users(email), tickets(ticket_title),app: app_id (app_name), app_version: app_version_id (app_version)"   
-    // );
-  
- 
-    const flattenedData = historyData?.map((ticket) => ({
-        ticket_title: ticket.tickets?.ticket_title || "N/A",
-        app_name: ticket.tickets?.apps?.app_name || "N/A",
-        app_version: ticket.tickets?.app_versions?.app_version || "N/A",
-        status: ticket.status || "N/A",
-        created_at: ticket.created_at || "No Date",
-        updated_by: ticket.users?.email || "N/A",
-    })) || [];
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const { flattenedData, historyDataError } = await getHistoryData();
+                if ( historyDataError ) {
+                    console.log("Error getting history data ", historyDataError );
+                }
+                setData(flattenedData);
+            } catch (err) {
+                console.log("Error fetching history data ", err);
+            } finally {
+                setLoading(false)
+            }
+        }
+        fetchData();
+    }, []);
 
-
-    console.log("flattenedData", flattenedData); // Verify that created_at is a Date object
-    console.log("historyData:", historyData);
-
-
+    if (loading) return <p>Loading...</p>;
+    
     return (
-        <div className="container mx-auto py-10">
-            <DataTable columns={columns} data={flattenedData} />
-        </div>
+        <DataTable columns={columns} data={data} />
     );
-}
+};

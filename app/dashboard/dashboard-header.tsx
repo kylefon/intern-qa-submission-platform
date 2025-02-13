@@ -1,3 +1,5 @@
+"use client";
+
 import TicketGroupForm from "@/components/ticket-group-form";
 import { AppTickets } from "@/components/app-tickets";
 import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/ui/tabs";
@@ -24,8 +26,7 @@ export default function DashboardHeader({ appData }: any) {
                     </div>
                 </TabsContent>
                 <TabsContent value="history">
-                <HistoryData />
-                   
+                    <HistoryData />
                 </TabsContent>
             </Tabs>
         </div>

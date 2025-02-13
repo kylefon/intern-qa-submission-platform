@@ -413,3 +413,26 @@ export async function deleteTicketGroup(id) {
         return { data: null, error};
     }
 }
+
+export async function getHistoryData() {
+    const supabase = await createClient();
+
+    const { data: historyData, error: historyDataError } = await supabase
+        .from("ticket_updates")
+        .select('*, tickets(ticket_title, apps(app_name), app_versions(app_version)), users(email)');
+
+    const flattenedData = historyData?.map((ticket) => ({
+        ticket_title: ticket.tickets?.ticket_title || "N/A",
+        app_name: ticket.tickets?.apps?.app_name || "N/A",
+        app_version: ticket.tickets?.app_versions?.app_version || "N/A",
+        status: ticket.status || "N/A",
+        created_at: ticket.created_at || "No Date",
+        updated_by: ticket.users?.email || "N/A",
+    })) || [];
+
+    if ( historyDataError ) {
+        console.log("Error in getting history data: ", error);
+    }
+
+    return { flattenedData, historyDataError }
+}
